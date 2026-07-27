@@ -1,0 +1,48 @@
+* {
+  box-sizing: border-box;
+}
+
+cardContainer {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(280px, 350px));
+  justify-content: center;
+  gap: 40px;
+  padding: 40px;
+  margin: 0;
+}
+
+.playercard {
+  text-align: center;
+  border: 1px solid #0d0c0c04;
+  font-family: Arial, sans-serif;
+  width: 100%;
+  padding: 20px 30px;
+  box-shadow: 0 4px 8px rgba(42, 39, 39, 0.1);
+  border-radius: 10px;
+}
+
+.stats{
+  padding: 10px;
+  font-size: 16px;
+}
+
+#player1:hover {
+  background: linear-gradient(135deg, #a81414, #c68b8b);
+  transform: translateY(-5px);
+  transition: background 0.3s, transform 0.3s;
+}
+#player2:hover {
+  background: linear-gradient(135deg, #388bd9, #fbfaf8);
+  transform: translateY(-5px);
+  transition: background 0.3s, transform 0.3s;
+}
+#player3:hover {
+  background: linear-gradient(135deg, #45d211, #c8ea4b);
+  transform: translateY(-5px);
+  transition: background 0.3s, transform 0.3s;
+}
+#player4:hover {
+  background: linear-gradient(135deg, #210b92, #e0dbdb);
+  transform: translateY(-5px);
+  transition: background 0.3s, transform 0.3s;
+}
