@@ -9,12 +9,18 @@ const productContainer = document.getElementById('product-container');
 function createProductCard(product) {
     const card = document.createElement('div');
     card.className = 'product-card';
+
+    const stockClass = product.fields.InStock ? 'in-stock' : 'out-of-stock';
+    const stockText = product.fields.InStock ? 'In Stock' : 'Out of Stock';
+
     card.innerHTML = `
-        <h2>${product.fields.Name}</h2>
         <img src="${product.fields.ImageURL}" alt="${product.fields.Name}">
-        <p>Price: $${product.fields.Price}</p>
-        <p>${product.fields.Description}</p>
-        <p>${product.fields.InStock ? "In Stock" : "Out of Stock"}</p>
+        <div class="product-body">
+            <h2>${product.fields.Name}</h2>
+            <p class="price">$${product.fields.Price}</p>
+            <p class="description">${product.fields.Description}</p>
+            <span class="stock-badge ${stockClass}">${stockText}</span>
+        </div>
     `;
     return card;
 }
