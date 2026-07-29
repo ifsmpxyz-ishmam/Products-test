@@ -1,5 +1,5 @@
 exports.handler = async (event, context) => {
-    const token = process.env.AIRTABLE_API_KEY;
+    const token = process.env.AIRTABLE_TOKEN;
     const baseId = process.env.AIRTABLE_BASE_ID;
     const tableName = 'Products';
 
