@@ -34,7 +34,7 @@ fetchProducts().then(products => {
         }
     });
 });
-const searchInput = document.getElementById('searchInput');
+const searchInput = document.getElementById('search-input');
 let allProducts = [];
 
 async function loadProducts() {
