@@ -12,6 +12,14 @@ async function fetchProducts() {
     return response.json();
 }
 
+function isInStock(value) {
+    if (typeof value === 'boolean') return value;
+    if (typeof value === 'string') {
+        return ['true', 'yes', 'in stock'].includes(value.trim().toLowerCase());
+    }
+    return false;
+}
+
 function createProductCard(product) {
     const card = document.createElement('div');
     card.className = 'product-card';
@@ -34,9 +42,10 @@ function createProductCard(product) {
     description.className = 'description';
     description.textContent = product.fields.Description;
 
+    const inStock = isInStock(product.fields.InStock);
     const stock = document.createElement('span');
-    stock.className = `stock-badge ${product.fields.InStock ? 'in-stock' : 'out-of-stock'}`;
-    stock.textContent = product.fields.InStock ? 'In Stock' : 'Out of Stock';
+    stock.className = `stock-badge ${inStock ? 'in-stock' : 'out-of-stock'}`;
+    stock.textContent = inStock ? 'In Stock' : 'Out of Stock';
 
     body.append(title, price, description, stock);
     card.append(image, body);
