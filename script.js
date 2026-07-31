@@ -1,63 +1,83 @@
+const productContainer = document.getElementById('product-container');
+const searchInput = document.getElementById('search-input');
+const statusMessage = document.getElementById('status-message');
+
+let allProducts = [];
+
 async function fetchProducts() {
     const response = await fetch('/.netlify/functions/getProducts');
-    const products = await response.json();
-    return products;
+    if (!response.ok) {
+        throw new Error(`Request failed with status ${response.status}`);
+    }
+    return response.json();
 }
-
-const productContainer = document.getElementById('product-container');
 
 function createProductCard(product) {
     const card = document.createElement('div');
     card.className = 'product-card';
+    card.style.borderColor = product.fields.InStock ? 'green' : 'red';
 
-    const stockClass = product.fields.InStock ? 'in-stock' : 'out-of-stock';
-    const stockText = product.fields.InStock ? 'In Stock' : 'Out of Stock';
+    const title = document.createElement('h2');
+    title.textContent = product.fields.Name;
 
-    card.innerHTML = `
-        <img src="${product.fields.ImageURL}" alt="${product.fields.Name}">
-        <div class="product-body">
-            <h2>${product.fields.Name}</h2>
-            <p class="price">$${product.fields.Price}</p>
-            <p class="description">${product.fields.Description}</p>
-            <span class="stock-badge ${stockClass}">${stockText}</span>
-        </div>
-    `;
+    const image = document.createElement('img');
+    image.src = product.fields.ImageURL;
+    image.alt = product.fields.Name;
+
+    const price = document.createElement('p');
+    price.textContent = `Price: $${Number(product.fields.Price).toFixed(2)}`;
+
+    const description = document.createElement('p');
+    description.textContent = product.fields.Description;
+
+    const stock = document.createElement('p');
+    stock.textContent = product.fields.InStock ? 'In Stock' : 'Out of Stock';
+
+    card.append(title, image, price, description, stock);
     return card;
 }
 
-fetchProducts().then(products => {
+function renderProducts(products) {
+    productContainer.innerHTML = '';
+
+    if (products.length === 0) {
+        const empty = document.createElement('p');
+        empty.textContent = 'No products found.';
+        productContainer.appendChild(empty);
+        return;
+    }
+
+    const fragment = document.createDocumentFragment();
     products.forEach(product => {
-        const card = createProductCard(product);
-        productContainer.appendChild(card);
-        if (product.fields.InStock) {
-            card.style.borderColor = 'green';
-        }
+        fragment.appendChild(createProductCard(product));
     });
-});
-const searchInput = document.getElementById('search-input');
-let allProducts = [];
+    productContainer.appendChild(fragment);
+}
+
+function debounce(fn, delay) {
+    let timeoutId;
+    return (...args) => {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => fn(...args), delay);
+    };
+}
 
 async function loadProducts() {
-    const response = await fetch('/.netlify/functions/getProducts');
-    const products = await response.json();
-    allProducts = products;
-    renderProducts(allProducts);
+    try {
+        allProducts = await fetchProducts();
+        renderProducts(allProducts);
+    } catch (error) {
+        console.error('Failed to load products:', error);
+        statusMessage.textContent = 'Sorry, products could not be loaded. Please try again later.';
+    }
 }
 
-function renderProducts(products) {
-    productContainer.innerHTML = "";
-    products.forEach(product => {
-        const card = createProductCard(product);
-        productContainer.appendChild(card);
-    });
-}
-
-searchInput.addEventListener('input', () => {
+searchInput.addEventListener('input', debounce(() => {
     const searchTerm = searchInput.value.toLowerCase();
     const filtered = allProducts.filter(product =>
         product.fields.Name.toLowerCase().includes(searchTerm)
     );
     renderProducts(filtered);
-});
+}, 200));
 
 loadProducts();
