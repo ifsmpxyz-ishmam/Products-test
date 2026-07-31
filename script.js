@@ -15,25 +15,31 @@ async function fetchProducts() {
 function createProductCard(product) {
     const card = document.createElement('div');
     card.className = 'product-card';
-    card.style.borderColor = product.fields.InStock ? 'green' : 'red';
-
-    const title = document.createElement('h2');
-    title.textContent = product.fields.Name;
 
     const image = document.createElement('img');
     image.src = product.fields.ImageURL;
     image.alt = product.fields.Name;
 
+    const body = document.createElement('div');
+    body.className = 'product-body';
+
+    const title = document.createElement('h2');
+    title.textContent = product.fields.Name;
+
     const price = document.createElement('p');
-    price.textContent = `Price: $${Number(product.fields.Price).toFixed(2)}`;
+    price.className = 'price';
+    price.textContent = `$${Number(product.fields.Price).toFixed(2)}`;
 
     const description = document.createElement('p');
+    description.className = 'description';
     description.textContent = product.fields.Description;
 
-    const stock = document.createElement('p');
+    const stock = document.createElement('span');
+    stock.className = `stock-badge ${product.fields.InStock ? 'in-stock' : 'out-of-stock'}`;
     stock.textContent = product.fields.InStock ? 'In Stock' : 'Out of Stock';
 
-    card.append(title, image, price, description, stock);
+    body.append(title, price, description, stock);
+    card.append(image, body);
     return card;
 }
 
